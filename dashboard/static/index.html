@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f0eee8">
+  <title>CAMPO P2P · Observatorio distribuido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css?v=17">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="CAMPO P2P, inicio">
+        <svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="4"></circle><circle cx="19" cy="19" r="11"></circle><path d="M19 2v6M19 30v6M2 19h6M30 19h6"></path></svg>
+        <span><strong>CAMPO P2P</strong><small>Observatorio distribuido</small></span>
+      </a>
+      <div class="system-summary" role="status"><span id="meshStatus"><i></i> Malla operativa</span><span>Sin coordinador central</span><span id="activePeerCount">4 peers conectados</span></div>
+      <div class="top-actions">
+        <span class="simulation-label">Simulación local</span>
+        <button class="event-button" id="neutrinoButton">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          Simular neutrino
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="map-panel" aria-labelledby="map-title">
+        <div class="map-heading">
+          <div><h1 id="map-title">Red P2P en operación</h1><p>Cada peer descubre, consulta, decide y reenvía sin un servidor coordinador</p></div>
+          <div class="map-status"><span class="route-key"></span>Ruta al gateway</div>
+        </div>
+
+        <div class="network-stage" id="networkStage">
+          <div class="map-coordinate north">N</div><div class="map-coordinate west">O</div><div class="map-coordinate east">E</div><div class="map-coordinate south">S</div>
+          <div class="zoom-controls" aria-label="Controles de zoom">
+            <button id="zoomOut" aria-label="Alejar mapa">−</button><output id="zoomLevel">100%</output><button id="zoomIn" aria-label="Acercar mapa">+</button>
+            <button id="zoomReset" class="fit-button" aria-label="Restablecer zoom"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg></button>
+            <button id="resetLayout" class="layout-button" aria-label="Restablecer posición de los nodos"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2"></circle><circle cx="18" cy="7" r="2"></circle><circle cx="12" cy="17" r="2"></circle><path d="m8 8 3 7M16 8l-3 7M8 7h8"></path></svg></button>
+          </div>
+
+          <div class="network-world" id="networkWorld">
+            <svg class="network-lines" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-label="Enlaces de la red">
+              <defs><marker id="routeArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0v6l6-3Z"></path></marker></defs>
+              <g class="network-link" data-link="A-B" tabindex="0" role="button" aria-label="Enlace Peer A a Peer B, activo"><path class="link-target" d="M500 120L800 260"></path><path class="link-line" d="M500 120L800 260"></path></g>
+              <g class="network-link" data-link="A-C" tabindex="0" role="button" aria-label="Enlace Peer A a Peer C, activo"><path class="link-target" d="M500 120L650 510"></path><path class="link-line" d="M500 120L650 510"></path></g>
+              <g class="network-link" data-link="A-D" tabindex="0" role="button" aria-label="Enlace Peer A a Peer D, activo"><path class="link-target" d="M500 120L250 420"></path><path class="link-line" d="M500 120L250 420"></path></g>
+              <g class="network-link" data-link="B-C" tabindex="0" role="button" aria-label="Enlace Peer B a Peer C, activo"><path class="link-target" d="M800 260L650 510"></path><path class="link-line" d="M800 260L650 510"></path></g>
+              <g class="network-link" data-link="B-D" tabindex="0" role="button" aria-label="Enlace Peer B a Peer D, activo"><path class="link-target" d="M800 260L250 420"></path><path class="link-line" d="M800 260L250 420"></path></g>
+              <g class="network-link" data-link="C-D" tabindex="0" role="button" aria-label="Enlace Peer C a Peer D, activo"><path class="link-target" d="M650 510L250 420"></path><path class="link-line" d="M650 510L250 420"></path></g>
+              <g class="network-link unavailable" data-link="A-E" tabindex="0" role="button"><path class="link-target" d="M500 120L220 150"></path><path class="link-line" d="M500 120L220 150"></path></g>
+              <g class="network-link unavailable" data-link="B-E" tabindex="0" role="button"><path class="link-target" d="M800 260L220 150"></path><path class="link-line" d="M800 260L220 150"></path></g>
+              <g class="network-link unavailable" data-link="C-E" tabindex="0" role="button"><path class="link-target" d="M650 510L220 150"></path><path class="link-line" d="M650 510L220 150"></path></g>
+              <g class="network-link unavailable" data-link="D-E" tabindex="0" role="button"><path class="link-target" d="M250 420L220 150"></path><path class="link-line" d="M250 420L220 150"></path></g>
+              <g class="network-link unavailable" data-link="A-F" tabindex="0" role="button"><path class="link-target" d="M500 120L440 560"></path><path class="link-line" d="M500 120L440 560"></path></g>
+              <g class="network-link unavailable" data-link="B-F" tabindex="0" role="button"><path class="link-target" d="M800 260L440 560"></path><path class="link-line" d="M800 260L440 560"></path></g>
+              <g class="network-link unavailable" data-link="C-F" tabindex="0" role="button"><path class="link-target" d="M650 510L440 560"></path><path class="link-line" d="M650 510L440 560"></path></g>
+              <g class="network-link unavailable" data-link="D-F" tabindex="0" role="button"><path class="link-target" d="M250 420L440 560"></path><path class="link-line" d="M250 420L440 560"></path></g>
+              <g class="network-link unavailable" data-link="E-F" tabindex="0" role="button"><path class="link-target" d="M220 150L440 560"></path><path class="link-line" d="M220 150L440 560"></path></g>
+              <g class="network-link" data-link="A-GW" tabindex="0" role="button" aria-label="Enlace Peer A al gateway, activo"><path class="link-target" d="M500 120L900 520"></path><path class="link-line gateway-link" d="M500 120L900 520"></path></g>
+              <g class="network-link" data-link="B-GW" tabindex="0" role="button" aria-label="Enlace Peer B al gateway, activo"><path class="link-target" d="M800 260L900 520"></path><path class="link-line gateway-link" d="M800 260L900 520" marker-end="url(#routeArrow)"></path></g>
+              <g class="network-link" data-link="C-GW" tabindex="0" role="button" aria-label="Enlace Peer C al gateway, activo"><path class="link-target" d="M650 510L900 520"></path><path class="link-line gateway-link" d="M650 510L900 520"></path></g>
+              <g class="network-link" data-link="D-GW" tabindex="0" role="button" aria-label="Enlace Peer D al gateway, activo"><path class="link-target" d="M250 420L900 520"></path><path class="link-line gateway-link" d="M250 420L900 520"></path></g>
+              <g class="network-link unavailable" data-link="E-GW" tabindex="0" role="button"><path class="link-target" d="M220 150L900 520"></path><path class="link-line gateway-link" d="M220 150L900 520"></path></g>
+              <g class="network-link unavailable" data-link="F-GW" tabindex="0" role="button"><path class="link-target" d="M440 560L900 520"></path><path class="link-line gateway-link" d="M440 560L900 520"></path></g>
+            </svg>
+            <div class="event-origin" aria-hidden="true"><span></span><span></span></div>
+
+            <article class="map-node active selected" data-peer="A" tabindex="0" aria-label="Peer A movible; usa las flechas para cambiar su posición" style="--x:50%;--y:19.4%"><button class="node-toggle" aria-label="Cambiar estado de Peer A"><span>A</span></button><div class="node-label"><strong>Peer A</strong><small>Activo · 3 vecinos</small></div><button class="node-menu-button" aria-label="Opciones de Peer A">•••</button></article>
+            <article class="map-node active" data-peer="B" tabindex="0" aria-label="Peer B movible; usa las flechas para cambiar su posición" style="--x:80%;--y:41.9%"><button class="node-toggle" aria-label="Cambiar estado de Peer B"><span>B</span></button><div class="node-label"><strong>Peer B</strong><small>Activo · 3 vecinos</small></div><button class="node-menu-button" aria-label="Opciones de Peer B">•••</button></article>
+            <article class="map-node active" data-peer="C" tabindex="0" aria-label="Peer C movible; usa las flechas para cambiar su posición" style="--x:65%;--y:82.3%"><button class="node-toggle" aria-label="Cambiar estado de Peer C"><span>C</span></button><div class="node-label"><strong>Peer C</strong><small>Activo · 3 vecinos</small></div><button class="node-menu-button" aria-label="Opciones de Peer C">•••</button></article>
+            <article class="map-node active" data-peer="D" tabindex="0" aria-label="Peer D movible; usa las flechas para cambiar su posición" style="--x:25%;--y:67.7%"><button class="node-toggle" aria-label="Cambiar estado de Peer D"><span>D</span></button><div class="node-label"><strong>Peer D</strong><small>Activo · 3 vecinos</small></div><button class="node-menu-button" aria-label="Opciones de Peer D">•••</button></article>
+            <article class="map-node standby" data-peer="E" tabindex="0" aria-label="Peer E movible; usa las flechas para cambiar su posición" style="--x:22%;--y:24.2%"><button class="node-toggle" aria-label="Cambiar estado de Peer E"><span>E</span></button><div class="node-label"><strong>Peer E</strong><small>En espera · no participa</small></div><button class="node-menu-button" aria-label="Opciones de Peer E">•••</button></article>
+            <article class="map-node standby" data-peer="F" tabindex="0" aria-label="Peer F movible; usa las flechas para cambiar su posición" style="--x:44%;--y:90.3%"><button class="node-toggle" aria-label="Cambiar estado de Peer F"><span>F</span></button><div class="node-label"><strong>Peer F</strong><small>En espera · no participa</small></div><button class="node-menu-button" aria-label="Opciones de Peer F">•••</button></article>
+
+            <article class="gateway-node" data-node="gateway" tabindex="0" aria-label="Gateway movible; usa las flechas para cambiar su posición" style="--x:90%;--y:83.9%"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v5H4zM4 13h16v5H4z"></path><path d="M7 8.5h.01M7 15.5h.01M17 8.5h1M17 15.5h1"></path></svg><span><strong>Gateway</strong><small id="gatewayReports">0 reportes recibidos</small></span></article>
+          </div>
+
+          <div class="context-menu" id="nodeMenu" role="menu" hidden>
+            <strong id="menuTitle">Peer A</strong>
+            <button role="menuitem" data-action="false-positive"><svg viewBox="0 0 24 24"><path d="M12 3 2.8 19h18.4L12 3Z"></path><path d="M12 9v4M12 16h.01"></path></svg>Simular falso positivo</button>
+            <button role="menuitem" data-action="details"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M12 11v5M12 8h.01"></path></svg>Ver detalles P2P</button>
+            <button role="menuitem" data-action="toggle"><svg viewBox="0 0 24 24"><path d="M12 2v10M5.7 5.7a9 9 0 1 0 12.6 0"></path></svg><span id="toggleMenuLabel">Desactivar nodo</span></button>
+          </div>
+
+          <aside class="node-inspector" id="nodeInspector" aria-label="Detalles del peer" hidden>
+            <div class="inspector-heading"><div><strong id="inspectorTitle">Peer A</strong><small id="inspectorSubtitle">Detalle P2P</small></div><button id="closeInspector" aria-label="Cerrar detalles"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button></div>
+            <div id="inspectorBody"></div>
+          </aside>
+
+          <div class="map-legend"><span><i class="active-key"></i>Activo</span><span><i class="gateway-key"></i>Gateway</span><span><i class="disabled-key"></i>Enlace cortado</span><span class="map-hint">Arrastra nodos o gateway · rueda para zoom</span></div>
+          <div class="event-progress" id="eventProgress"><div class="event-summary"><strong id="eventTitle">Malla P2P disponible</strong><small id="eventSubtitle">Esperando una acción de demostración</small><div class="event-trace" id="eventTrace">Selecciona un peer o inicia un evento para ver el recorrido de los paquetes.</div><div class="playback-controls" aria-label="Velocidad de reproducción"><span id="playbackStatus">Sin reproducción</span><button data-speed="2.5" class="active">Tiempo real</button><button data-speed="1">Lento</button><button data-speed="0.35">Muy lento</button><button id="pausePlayback" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"></path></svg><span>Pausa</span></button></div></div><ol><li class="done">Evento local</li><li>Votos P2P</li><li>Decisión</li><li>Envío GW</li></ol></div>
+        </div>
+      </section>
+
+      <aside class="side-panel" aria-label="Estado de la simulación">
+        <section class="activity">
+          <div class="panel-heading"><div><h2 id="activityTitle">Actividad P2P</h2><p id="activityContext">Red completa · tráfico real más reciente</p></div><button id="clearActivity">Actualizar</button></div>
+          <ol id="activityList"><li class="empty-activity">Esperando actividad de la red.</li></ol>
+        </section>
+        <section class="selected-peer">
+          <div class="panel-heading"><div><h2>Estado general</h2><p>Resumen de la malla completa</p></div><span class="online-status" id="networkStatus"><i></i><span>Operativa</span></span></div>
+          <dl class="p2p-state">
+            <div><dt>Peers disponibles</dt><dd id="networkPeers">0 de 6</dd></div>
+            <div><dt>Enlaces operativos</dt><dd id="networkLinks">0 activos</dd></div>
+            <div><dt>Consenso configurado</dt><dd class="positive" id="networkConsensus">Estricto N/N</dd></div>
+            <div><dt>Reportes en gateway</dt><dd id="networkReports">0 recibidos</dd></div>
+          </dl>
+          <p class="protocol-note">Cada peer decide y reenvía de forma autónoma. Abre los tres puntos de un nodo para ver únicamente su actividad, vecinos y rutas.</p>
+        </section>
+        <section class="false-positive-panel"><div class="panel-heading"><div><h2>Falsos positivos</h2><p>Elige qué peers detectarán un evento inexistente</p></div></div><div class="peer-selector" id="falsePositivePeers" aria-label="Peers con falso positivo"></div><div class="false-positive-action"><span id="falsePositiveCount">Ningún peer seleccionado</span><button id="runFalsePositives" disabled>Probar selección</button></div></section>
+        <section class="settings"><h2>Reglas de la red</h2><label>Política de consenso<span class="segmented"><button class="active" data-policy="strict" aria-describedby="consensusExplanation">Todos (N/N)</button><button data-policy="custom" aria-describedby="consensusExplanation">Configurable (K/N)</button></span></label><label class="quorum-setting">Votos positivos requeridos<span class="quorum-control"><span class="stepper"><button id="quorumDown" aria-label="Disminuir votos requeridos">−</button><output id="quorumValue">3</output><button id="quorumUp" aria-label="Aumentar votos requeridos">+</button></span><small id="quorumRange">de 4 peers activos</small></span></label><p class="consensus-explanation" id="consensusExplanation" role="status">Con 4 peers activos, se necesitan 4 votos positivos.</p><label>TTL máximo<span class="stepper"><button id="ttlDown" aria-label="Disminuir TTL">−</button><output id="ttlValue">5</output><button id="ttlUp" aria-label="Aumentar TTL">+</button></span></label></section>
+        <footer><span><i></i> API local conectada</span><a href="/docs">Ver API</a></footer>
+      </aside>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span class="toast-mark"></span><div><strong></strong><small></small></div></div>
+  <script src="/static/app.js?v=17"></script>
+</body>
+</html>

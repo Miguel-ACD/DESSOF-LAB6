@@ -1,0 +1,86 @@
+x-peer: &peer
+  build: .
+  command: uvicorn peer.app:app --host 0.0.0.0 --port 8000
+  restart: unless-stopped
+  environment:
+    DETECTION_THRESHOLD: "120"
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+    interval: 5s
+    timeout: 3s
+    retries: 20
+
+services:
+  peer-a:
+    <<: *peer
+    environment:
+      PEER_ID: peer-a
+      PEER_ZONE: Campo Norte
+      INITIAL_ACTIVE: "true"
+      DETECTION_THRESHOLD: "120"
+    ports: ["8101:8000"]
+
+  peer-b:
+    <<: *peer
+    environment:
+      PEER_ID: peer-b
+      PEER_ZONE: Campo Este
+      INITIAL_ACTIVE: "true"
+      DETECTION_THRESHOLD: "120"
+    ports: ["8102:8000"]
+
+  peer-c:
+    <<: *peer
+    environment:
+      PEER_ID: peer-c
+      PEER_ZONE: Campo Sur
+      INITIAL_ACTIVE: "true"
+      DETECTION_THRESHOLD: "120"
+    ports: ["8103:8000"]
+
+  peer-d:
+    <<: *peer
+    environment:
+      PEER_ID: peer-d
+      PEER_ZONE: Campo Oeste
+      INITIAL_ACTIVE: "true"
+      DETECTION_THRESHOLD: "120"
+    ports: ["8104:8000"]
+
+  peer-e:
+    <<: *peer
+    environment:
+      PEER_ID: peer-e
+      PEER_ZONE: Campo Superior
+      INITIAL_ACTIVE: "false"
+      DETECTION_THRESHOLD: "120"
+    ports: ["8105:8000"]
+
+  peer-f:
+    <<: *peer
+    environment:
+      PEER_ID: peer-f
+      PEER_ZONE: Campo Inferior
+      INITIAL_ACTIVE: "false"
+      DETECTION_THRESHOLD: "120"
+    ports: ["8106:8000"]
+
+  gateway:
+    build: .
+    command: uvicorn gateway.app:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    ports: ["8090:8000"]
+
+  dashboard:
+    build: .
+    command: uvicorn dashboard.app:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    depends_on:
+      peer-a: {condition: service_healthy}
+      peer-b: {condition: service_healthy}
+      peer-c: {condition: service_healthy}
+      peer-d: {condition: service_healthy}
+      peer-e: {condition: service_healthy}
+      peer-f: {condition: service_healthy}
+      gateway: {condition: service_healthy}
+    ports: ["8080:8000"]
